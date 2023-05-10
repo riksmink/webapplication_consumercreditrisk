@@ -27,36 +27,29 @@ from lime.lime_tabular import LimeTabularExplainer
 creditriskmodel = pd.read_csv('creditrisk01_ub.csv', index_col = False)  # For training and testing the models
 creditriskclient = pd.read_csv('creditrisk02_b.csv', index_col = False) # Special clients for the test
 
+# Create a list of the features
+features = ['person_age', 'person_income', 'person_emp_length', 'loan_amnt',
+            'loan_int_rate', 'loan_percent_income', 'cb_person_cred_hist_length', 
+            'person_home_ownership', 'loan_intent', 'loan_grade', 'cb_person_default_on_file']
+
 # Define the features and target variable (loan_status)
-X = creditriskmodel[['person_age', 'person_income', 'person_emp_length', 'loan_amnt',
-       'loan_int_rate', 'loan_percent_income', 'cb_person_cred_hist_length', 
-       'person_home_ownership', 'loan_intent', 'loan_grade', 'cb_person_default_on_file']]
+X = creditriskmodel[features]
 y = creditriskmodel['loan_status']
-
-train_features = ['person_age', 'person_income', 'person_emp_length',
-                 'loan_amnt', 'loan_int_rate', 'loan_percent_income',
-                   'cb_person_cred_hist_length', 'person_home_ownership',
-                     'loan_intent', 'loan_grade', 'cb_person_default_on_file']
-
-test_features = ['person_age', 'person_income', 'person_emp_length',
-                 'loan_amnt', 'loan_int_rate', 'loan_percent_income',
-                   'cb_person_cred_hist_length', 'person_home_ownership',
-                     'loan_intent', 'loan_grade', 'cb_person_default_on_file']
 
 # Split the data into training- and test data
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Fit the decision tree on the training data
 tree_clf = DecisionTreeClassifier(max_depth=4, random_state=42)
-tree_clf.fit(X_train[train_features], y_train)
+tree_clf.fit(X_train, y_train)
 
 # Fit the random forest on the training data
 rfc = RandomForestClassifier(n_estimators=8, random_state=42)
-rfc.fit(X_train[train_features], y_train)
+rfc.fit(X_train, y_train)
 
 # Fit the logistic regression on the training data
 log_reg = LogisticRegression(random_state=42)
-log_reg.fit(X_train[train_features], y_train)
+log_reg.fit(X_train, y_train)
 
 
             # Make the webapplication 
@@ -71,12 +64,8 @@ st.markdown("<h1 style='text-align: center; color: #0077c2;'>Explainable AI voor
 st.write('Welkom bij de webapplicatie voor mijn onderzoek naar de voorkeuren van manieren van uitleg krijgen, vanuit kredietbeoordelaars. De toegepaste dataset is een openbare dataset die is gesimuleerd om een kredietrisicobeoordeling weer te geven. De dataset bevat verschillende factoren. Deze omvatten bijvoorbeeld leeftijd, inkomen en lengte van het dienstverband. Op basis van deze factoren wordt voorspeld of iemand een lening krijgt ja of nee. Het doel van dit experiment is na te gaan waar de voorkeuren voor het verkrijgen van uitleg vanuit AI-modellen liggen bij kredietbeoordelaars.')
 st.write('Doordat er gebruik wordt gemaakt van een Amerikaanse dataset nog een aanmerking. In Amerika kennen kredietbeoordelingsbureaus zoals Experian, Equifax en TransUnion leningsgraden toe aan personen en bedrijven op basis van hun kredietwaardigheid. De leengraad is een score die aangeeft hoe waarschijnlijk het is dat een individu zijn schulden op tijd aflost. De rating is gewoonlijk gebaseerd op een aantal factoren, waaronder de kredietgeschiedenis van de persoon, het inkomen en andere financiële informatie. De rating wordt vaak uitgedrukt in een lettercijfer, gaande van "A" tot "F", waarbij "A" de hoogste rating is en "F" de laagste.')
 
-            # Create lists and libraries for overview 
+            # Create dictionaries for overview 
 
-# Create a list of the features
-features = ['person_age', 'person_income', 'person_emp_length', 'loan_amnt',
-            'loan_int_rate', 'loan_percent_income', 'cb_person_cred_hist_length', 
-            'person_home_ownership', 'loan_intent', 'loan_grade', 'cb_person_default_on_file']
 
 # Create a dictionary to show the customers with the models
 models = {
@@ -146,14 +135,11 @@ filtered_clients = creditriskclient[creditriskclient['Client'] == selected_clien
 # Get the loan status for the selected client
 loan_status = filtered_clients['loan_status'].iloc[0]
 
-# Determine the approval text based on the loan status
-approval_text = "goedgekeurd" if loan_status == 1 else "afgekeurd"
-
 # Show the approval status message in a block
 if loan_status == 1:
-    st.success(f"{selected_client} is {approval_text} voor de leningaanvraag.")
+    st.success(f"{selected_client} is goedgekeurd voor de leningaanvraag.")
 else:
-    st.error(f"{selected_client} is {approval_text} voor de leningaanvraag.")
+    st.error(f"{selected_client} is afgekeurd voor de leningaanvraag.")
     
 
              # Create functions for XAI methods 
@@ -194,7 +180,7 @@ def explain_client_lime(client_data, model):
     exp_lime_list = [(translations.get(feature[0], feature[0]), feature[1]) for feature in exp_lime.as_list()]
     return exp_lime_list
 
-def show_decision_tree(x):
+def show_decision_tree():
     # Drop the model column, otherwise it would not create the right path. Also get the right client
     x = creditriskclient.drop(columns=['model']).loc[filtered_clients.index.values[0]]
     # Create the figure
@@ -218,7 +204,7 @@ def get_most_important_tree(rfc, X, y):
     return rfc.estimators_[most_important_tree_index]
 
 # Define a function to show a random forest
-def show_random_forest(x):
+def show_random_forest():
     # Get the most important tree
     most_important_tree = get_most_important_tree(rfc, X, y)
     # Drop the model column, otherwise it would not create the right path. Also get the right client
@@ -234,7 +220,7 @@ def display_correlation_figure(selected_client):
     # Get the selected client's model
     model = models[selected_client]
     # Get the X and y data for the creditrisk model
-    X = creditriskmodel[train_features]
+    X = creditriskmodel[features]
     y = creditriskmodel['loan_status']
     # Make predictions on the X data using the chosen model
     y_pred = model.predict(X)
@@ -256,7 +242,7 @@ def recall(model, X_test, y_test):
     # Get the selected client's model
     model = models[selected_client]
     # Calculate the recall
-    y_pred = model.predict(X_test[test_features])
+    y_pred = model.predict(X_test[features])
     recall = recall_score(y_test, y_pred)
     return recall
 
@@ -317,7 +303,7 @@ if st.button('Methode 2'):
     model = models[selected_client]
     X_renamed = X.rename(columns=translations)
     # Get the data for the selected client
-    client_data = creditriskclient.iloc[int(selected_client.split()[1]) - 1][test_features]
+    client_data = creditriskclient.iloc[int(selected_client.split()[1]) - 1][features]
     # Make a Lime explainer
     explainer = LimeTabularExplainer(X_train.values, feature_names=X_renamed.columns, class_names=['0', '1'], discretize_continuous=True)
     # Make the text explanation
@@ -330,7 +316,7 @@ if st.button('Methode 3'):
     # Get the selected client's model
     model = models[selected_client]
     # Get the data for the selected client
-    client_data = creditriskclient.iloc[int(selected_client.split()[1]) - 1][test_features]
+    client_data = creditriskclient.iloc[int(selected_client.split()[1]) - 1][features]
     # Generate the LIME explanation for the selected client
     exp_lime = explain_client_lime(client_data, model)
     # Extract feature importance values and names from the explanation
@@ -348,7 +334,7 @@ if st.button('Methode 3'):
     fig, ax = plt.subplots()
     ax.barh(features_sorted, importance_sorted, color=colors_sorted)
     ax.set_xlabel('Invloed van factor')
-    ax.set_ylabel('Factor')
+    ax.set_ylabel('Factoren voor voorspelling')
     ax.set_title('Uitleg van factoren voor {}'.format(selected_client))
     # Show the graphic in Streamlit
     st.pyplot(fig)
@@ -361,12 +347,10 @@ if st.button('Methode 4'):
     x = creditriskclient.loc[filtered_clients.index.values[0]]
     if isinstance(selected_model, DecisionTreeClassifier): 
         st.write('U gaat nu het gehele model met het pad van de specifieke klant zien!')
-        #time.sleep(3)  # Add a 3 second delay before showing the picture
-        show_decision_tree(x)
+        show_decision_tree()
     elif isinstance(selected_model, RandomForestClassifier):
         st.write('Let op: dit is alleen het belangrijkste gedeelte (1/4) van het model en alleen het pad van deze specifieke klant!')
-        time.sleep(3)  # Add a 3 second delay before showing the picture
-        show_random_forest(x)
+        show_random_forest()
     else: 
         st.write('Sorry, dit is geen boomvormig model.')
 
@@ -409,16 +393,15 @@ with st.expander("Methode 5"):
     modified_client_data['loan_grade'] = loan_grade_value
     # Convert the modified client data to a format that can be used by the trained model
     modified_client_data = pd.DataFrame(modified_client_data).transpose()
-    modified_client_data = modified_client_data[train_features] # Based on train features otherwise to much features 
+    modified_client_data = modified_client_data[features] # Based on train features otherwise to much features 
     # Make a new prediction based on the modified features
     new_prediction = model.predict(modified_client_data)
     # Determine the prediction text based on the prediction
     if new_prediction[0] == 1:
-        prediction_str = 'wel zijn goedgekeurd'
-        st.success(f'Op basis van deze waarden zou de klant {prediction_str}!')
+        st.success(f'Op basis van deze waarden zou de klant wel zijn goedgekeurd!')
     else:
         prediction_str = 'nog steeds zijn afgekeurd'
-        st.error(f'Op basis van deze waarden zou de klant {prediction_str}.')
+        st.error(f'Op basis van deze waarden zou de klant zijn afgekeurd.')
 
             # Working with XAI-methods part 2
 
@@ -456,7 +439,7 @@ if st.button('Methode 8'):
         importances = np.abs(selected_model.coef_[0]) # Take absolute values of coefficients
         show_xlabel_ticks = False  # Hide the X-axis tick labels for LogisticRegression
     # Map feature names to translations
-    feature_labels = [translations.get(feature, feature) for feature in train_features]    
+    feature_labels = [translations.get(feature, feature) for feature in features]    
     # Sort the importances
     sorted_indixes_importances = np.argsort(importances)[::-1]
     # Sort the importances and feature labels 
