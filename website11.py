@@ -408,6 +408,8 @@ with st.expander("Methode 5"):
     modified_client_data['loan_grade'] = loan_grade_value
     # Convert the modified client data to a format that can be used by the trained model
     modified_client_data = pd.DataFrame(modified_client_data).transpose()
+    features_method5 = ['person_income', 'loan_percent_income', 'loan_grade']
+    modified_client_data = modified_client_data[features_method5] # Based on features otherwise to much features 
     # Make a new prediction based on the modified features
     new_prediction = model.predict(modified_client_data)
     # Determine the prediction text based on the prediction
