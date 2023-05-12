@@ -192,7 +192,7 @@ def show_decision_tree():
     v = viz.view(x=x, fancy=False) # Histograms are not shown because of fancy. x=x is creating the path
     v.save('/Users/riksmink/Master_AI/Afstuderen/Images/decision.tree.svg') 
     # Show the updated SVG image in streamlit
-    with open('/Users/riksmink/Master_AI/Afstuderen/Images/decision.tree.svg', 'r') as f:
+    with open('/Images/decision.tree.svg', 'r') as f:
         svg = f.read()
         b64 = base64.b64encode(svg.encode('utf-8')).decode("utf-8")
         html = f'<img src="data:image/svg+xml;base64,{b64}" width="150%" height="auto"/>' # Width optimal at 150
@@ -223,8 +223,8 @@ def show_random_forest():
                      target_name='Leenstatus', feature_names=translation_idx, class_names=['Afgewezen', 'Toegewezen'])
     v = viz.view(x=x, fancy=False, show_just_path=True) # Histograms are not shown because of fancy. x=x is creating the path     
     v.save('/Users/riksmink/Master_AI/Afstuderen/Images/random.forest.svg') 
-    # Show the updated SVG image in streamlit
-    with open('/Users/riksmink/Master_AI/Afstuderen/Images/random.forest.svg', 'r') as f:
+    # Show the updated SVG image in streamlit Images
+    with open('/Images/random.forest.svg', 'r') as f:
         svg = f.read()
         b64 = base64.b64encode(svg.encode('utf-8')).decode("utf-8")
         html = f'<img src="data:image/svg+xml;base64,{b64}" width="100%" height="auto"/>' # Width optimal at 100
