@@ -170,7 +170,9 @@ def explain_client_lime(client_data, model):
     # Get the selected client's model
     model = models[selected_client]
     # Rename the columns with the translation library
+    print(X_train.columns)
     X_train_renamed = X_train.rename(columns=translations)
+    print(X_train.renamed.columns)
     # Make the Lime_explainer
     explainer_lime = LimeTabularExplainer(X_train_renamed.values,
                                                        feature_names=X_train_renamed.columns.tolist(),
@@ -416,10 +418,8 @@ with st.expander("Methode 5"):
     modified_client_data['loan_int_rate'] = selected_client_data['loan_int_rate']
     modified_client_data['loan_intent'] = selected_client_data['loan_intent']
     modified_client_data['cb_person_default_on_file'] = selected_client_data['cb_person_default_on_file']
-
     # Now you can index modified_client_data with the features list
     modified_client_data = modified_client_data[features]
-
     # Make a new prediction based on the modified features
     new_prediction = model.predict(modified_client_data)
     # Determine the prediction text based on the prediction
