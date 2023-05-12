@@ -7,3 +7,6 @@ scikit-learn
 seaborn
 dtreeviz 
 graphviz
+svgwrite
+base64 
+io
