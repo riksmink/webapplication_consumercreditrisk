@@ -190,7 +190,7 @@ def show_decision_tree():
     viz = dtreeviz.model(tree_clf, creditriskmodel.drop(columns=['loan_status']), creditriskmodel['loan_status'], 
                      target_name='Leenstatus', feature_names=translation_idx, class_names=['Afgewezen', 'Toegewezen'])
     v = viz.view(x=x, fancy=False) # Histograms are not shown because of fancy. x=x is creating the path
-    v.save('/Users/riksmink/Master_AI/Afstuderen/Images/decision.tree.svg') 
+    v.save('/Images/decision.tree.svg') 
     # Show the updated SVG image in streamlit
     with open('/Images/decision.tree.svg', 'r') as f:
         svg = f.read()
@@ -222,7 +222,7 @@ def show_random_forest():
     viz = dtreeviz.model(most_important_tree, creditriskmodel.drop(columns=['loan_status']), creditriskmodel['loan_status'], 
                      target_name='Leenstatus', feature_names=translation_idx, class_names=['Afgewezen', 'Toegewezen'])
     v = viz.view(x=x, fancy=False, show_just_path=True) # Histograms are not shown because of fancy. x=x is creating the path     
-    v.save('/Users/riksmink/Master_AI/Afstuderen/Images/random.forest.svg') 
+    v.save('/Images/random.forest.svg') 
     # Show the updated SVG image in streamlit Images
     with open('/Images/random.forest.svg', 'r') as f:
         svg = f.read()
