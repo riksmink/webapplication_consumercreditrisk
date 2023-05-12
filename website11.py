@@ -335,12 +335,12 @@ if st.button('Methode 3'):
     # Generate the LIME explanation for the selected client
     exp_lime = explain_client_lime(client_data, model)
     # Extract feature importance values and names from the explanation
-    features = [translations.get(x[0], x[0]) for x in exp_lime]
+    features_1 = [translations.get(x[0], x[0]) for x in exp_lime]
     importance = [x[1] for x in exp_lime]
     # Sort the importances
     sorted_indixes_importances_lime = np.argsort(importance)[::-1]
     # Sort the features and importance labels
-    features_sorted = [features[i] for i in sorted_indixes_importances_lime]
+    features_sorted = [features_1[i] for i in sorted_indixes_importances_lime]
     importance_sorted = [importance[i] for i in sorted_indixes_importances_lime]
     # Create a list of colors for the bars based on their values
     colors_sorted = ['red' if x < 0 else 'green' for x in importance_sorted]
