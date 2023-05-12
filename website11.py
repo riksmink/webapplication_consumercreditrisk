@@ -147,14 +147,14 @@ else:
              # Create functions for XAI methods 
 
 # Define a function to show a text explanation 
-def text_explanation_lime(model, client_data):
+def text_explanation_lime():
     # Rename the columns with the translation library
     X_renamed = X.rename(columns=translations)
     # Get the selected clients model and loan_status
     model = models[selected_client]
     loan_status = filtered_clients['loan_status'].iloc[0]
     # Make the text explainer using Lime
-    exp = explainer.explain_instance(client_data.values.flatten(), model.predict_proba, num_features=len(X_renamed.columns))
+    exp = explainer.explain_instance(creditriskclient.values.flatten(), model.predict_proba, num_features=len(X_renamed.columns))
     # Get the top three most important features to the prediction
     sorted_features = exp.as_list()
     # Delete the numbers and signs using RegEx
@@ -166,20 +166,18 @@ def text_explanation_lime(model, client_data):
     return explanation_Lime
 
 # Define a function to show a local explanation in a figure 
-def explain_client_lime(client_data, model):
+def explain_client_lime():
     # Get the selected client's model
     model = models[selected_client]
     # Rename the columns with the translation library
-    print(X_train.columns)
     X_train_renamed = X_train.rename(columns=translations)
-    print(X_train_renamed.columns)
     # Make the Lime_explainer
     explainer_lime = LimeTabularExplainer(X_train_renamed.values,
                                                        feature_names=X_train_renamed.columns.tolist(),
                                                        class_names=['rejected', 'approved'],
                                                        mode='classification',
                                                        discretize_continuous=True)
-    exp_lime = explainer_lime.explain_instance(client_data, model.predict_proba, num_features=6)
+    exp_lime = explainer_lime.explain_instance(creditriskclient, model.predict_proba, num_features=6)
     # Use the renamed feature_names in the output
     exp_lime_list = [(translations.get(feature[0], feature[0]), feature[1]) for feature in exp_lime.as_list()]
     return exp_lime_list
