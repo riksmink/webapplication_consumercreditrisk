@@ -172,7 +172,7 @@ def explain_client_lime(client_data, model):
     # Rename the columns with the translation library
     print(X_train.columns)
     X_train_renamed = X_train.rename(columns=translations)
-    print(X_train.renamed.columns)
+    print(X_train_renamed.columns)
     # Make the Lime_explainer
     explainer_lime = LimeTabularExplainer(X_train_renamed.values,
                                                        feature_names=X_train_renamed.columns.tolist(),
