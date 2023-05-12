@@ -408,7 +408,7 @@ with st.expander("Methode 5"):
     modified_client_data['loan_grade'] = loan_grade_value
     # Convert the modified client data to a format that can be used by the trained model
     modified_client_data = pd.DataFrame(modified_client_data).transpose()
-    # Now you can index modified_client_data with the features list
+    # Index modified_client_data with the features list
     modified_client_data = modified_client_data[features]
     # Make a new prediction based on the modified features
     new_prediction = model.predict(modified_client_data)
