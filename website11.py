@@ -60,6 +60,19 @@ log_reg.fit(X_train, y_train)
 # Skip the warning: because of matplotlib import
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
+# Add custom CSS
+st.markdown(
+    """
+    <style>
+    body {
+        background-color: black;
+        color: white;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # Give a title to the webapplication
 st.markdown("<h1 style='text-align: center; color: #0077c2;'>Explainable AI voor consumenten kredietrisico</h1>", unsafe_allow_html=True)
 # Introductory texts
