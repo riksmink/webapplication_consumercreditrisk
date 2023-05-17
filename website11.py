@@ -53,14 +53,12 @@ rfc.fit(X_train, y_train)
 log_reg = LogisticRegression(random_state=42)
 log_reg.fit(X_train, y_train)
 
-
             # Make the webapplication 
-
 
 # Skip the warning: because of matplotlib import
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
-# Add custom CSS
+# Add black background
 st.markdown(
     """
     <style>
@@ -80,7 +78,6 @@ st.write('Welkom bij de webapplicatie voor mijn onderzoek naar de voorkeuren van
 st.write('Doordat er gebruik wordt gemaakt van een Amerikaanse dataset nog een aanmerking. In Amerika kennen kredietbeoordelingsbureaus zoals Experian, Equifax en TransUnion leningsgraden toe aan personen en bedrijven op basis van hun kredietwaardigheid. De leengraad is een score die aangeeft hoe waarschijnlijk het is dat een individu zijn schulden op tijd aflost. De rating is gewoonlijk gebaseerd op een aantal factoren, waaronder de kredietgeschiedenis van de persoon, het inkomen en andere financiële informatie. De rating wordt vaak uitgedrukt in een lettercijfer, gaande van "A" tot "F", waarbij "A" de hoogste rating is en "F" de laagste.')
 
             # Create dictionaries for overview 
-
 
 # Create a dictionary to show the customers with the models
 models = {
@@ -134,9 +131,7 @@ loan_intent01 = {0: 'Schuldconsolidatie', 1: 'Onderwijs', 2: 'Woningverbetering'
 loan_grade01 = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F', 6: 'G'}
 cb_person_default_on_file01 = {0: 'Nee', 1: 'Ja'}
 
-
             # Create the input for the webapplication
-
 
 # Add a header for model selection
 st.markdown("<h2 style='color: #0077c2;'>Bekijk de aanvragen</h2>", unsafe_allow_html=True)
@@ -156,7 +151,6 @@ if loan_status == 1:
 else:
     st.error(f"{selected_client} is afgekeurd voor de leningaanvraag.")
     
-
              # Create functions for XAI methods 
 
 # Define a function to show a text explanation 
